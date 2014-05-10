@@ -1,0 +1,19 @@
+{% extends 'blog/blog_base.html' %}
+{% load i18n %}
+{% load tagging_tags %}
+
+{% block body_id %}pg_blog{% endblock %}
+
+{% block content_main %}
+  <section class="main--right">
+    <h2>Blog Entries by Date</h2>
+
+    <ul class="list--fullsize">
+      {% for month in months %}
+        {% ifchanged month.0 %}
+          <li class="list--fullsize__divider">{{ month.0 }}</li>{% endifchanged %}
+        <li><a href="{% url blog.views.month month.0 month.1 %}">{{ month.2 }}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endblock %}

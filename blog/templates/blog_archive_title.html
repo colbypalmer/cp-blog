@@ -1,0 +1,18 @@
+{% extends 'blog/blog_base.html' %}
+{% load i18n %}
+{% load tagging_tags %}
+
+{% block body_id %}pg_blog{% endblock %}
+
+{% block content_main %}
+  <section class="main--right">
+    <h2>Blog Entries by Title</h2>
+
+    <ul class="list--fullsize">
+      {% for item in entries %}
+        <li><a href="{% url 'blog_detail' item.slug %}">{{ item.title }} <span
+            class="list--fullsize__note">{{ item.entry_date|date:"N j, Y" }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endblock %}

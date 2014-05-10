@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% load blog_tags %}
+
+{% block site_main %}
+  {% block sidebar_l %}
+    {% get_blog_sidebar %}
+  {% endblock %}
+
+  {% block content_main %}{% endblock %}
+{% endblock %}

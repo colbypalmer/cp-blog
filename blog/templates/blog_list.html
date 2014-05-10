@@ -1,0 +1,67 @@
+{% extends 'blog/blog_base.html' %}
+{% load i18n %}
+{% load tagging_tags %}
+{% load threadedcomments_tags %}
+{% load comments %}
+{% load pygmentify %}
+
+{% block body_id %}pg_blog{% endblock %}
+
+{% block content_main %}
+  <section class="main--right">
+
+    {% if category %}<h1>All entries matching the category <em>{{ category }}</em></h2>
+    {% endif %}
+    {% if tag %}<h1>All entries with the tag <em>{{ tag }}</em></h2>{% endif %}
+    {% if query_string %}
+      <h1>All entries matching the search <em>&quot;{{ query_string }}&quot;</em></h2>
+    {% endif %}
+
+    {% if not entries %}
+      <p>No posts with that criteria were found.</p>
+    {% endif %}
+    {% for o in entries.object_list %}
+      <article class="main__article">
+        <h1 class="article__title"><a href="{% url 'blog_detail' o.slug %}">{{ o.title }}</a></h1>
+
+        <h2 class="article__subtitle">{{ o.description }}</h2>
+
+        {{ o.body|safe|linebreaks|pygmentify }}
+        {% if not o.comments_open %}<p class="article__note">Comments on this post are closed.
+          </p>{% endif %}
+        <p class="article--meta">
+          Posted on <time pubdate="pubdate">{{ o.entry_date }}</time>
+                    {% if o.tags %}{% tags_for_object o as blogpost_tags %}<span class="article__tags">
+                      Tags: {% for tag in blogpost_tags %}
+                        <a href="/blog/tag/{{ tag }}/">{{ tag }}</a> {% endfor %}</span>{% endif %}
+        </p>
+        <a name="comments"></a>
+        {% get_comment_count for o as comment_count %}
+        <p class="article__a--comments"><a href="{% url 'blog_detail' o.slug %}#comments">Comments on this
+          post ({{ comment_count }}) &rarr;</a></p>
+      </article>
+    {% endfor %}
+
+    {# Next/Prev page links #}
+    {% if entries.object_list and entries.paginator.num_pages > 1 %}
+    <div class="pagination">
+      {% if entries.has_previous %}
+        <a href="?page={{ entries.previous_page_number }}" class="pagination--link pagination--left">&laquo; newer
+          entries</a>
+      {% endif %}
+
+      <span class="pagination--current">
+        Page {{ entries.number }} of {{ entries.paginator.num_pages }}
+      </span>
+
+      {% if entries.has_next %}
+        <a href="?page={{ entries.next_page_number }}" class="pagination--link pagination--right">older
+          entries &raquo;</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </section>
+
+{% endblock %}
+
+{% block extra_scripts %}{% endblock %}

@@ -1,0 +1,54 @@
+{% load tagging_tags %}
+
+<aside class="sidebar--left" id="sidebar_blog">
+
+  <form class="sidebar__search" method="get" action="{% url 'blog_search' %}">
+    <label for="search__input" id="search__label">Search</label>
+    <input type="text" name="q" value="" placeholder="Search..." id="search__input"/>
+  </form>
+
+  <div id="accordion">
+
+    <h3 class="sidebar__heading">Recent Posts</h3>
+    <ul class="sidebar__ul--menu">
+      {% for item in recent %}
+      <li class="sidebar__li--menu"><a href="{% url 'blog_detail' item.slug %}">{{ item.title }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <h3 class="sidebar__heading">Popular Posts</h3>
+    <ul class="sidebar__ul--menu">
+      {% for item in popular %}
+      <li class="sidebar__li--menu"><a href="{% url 'blog_detail' item.slug %}">{{ item.title }}</a></li>{% endfor %}
+    </ul>
+
+    <h3 class="sidebar__heading">Categories</h3>
+    <ul class="sidebar__ul--menu">
+      {% for item in categories %}
+       <li class="sidebar__li--menu"><a href="{% url 'blog_entries_by_category' item.slug %}">{{ item.title }}</a></li>{% endfor %}
+    </ul>
+
+    <h3 class="sidebar__heading">Tags</h3>
+      <div class='sidebar_tagcloud'>
+        {% tag_cloud_for_model blog.BlogEntry as blog_tags with steps=6 min_count=2 distribution=log %}
+        {% for tag in blog_tags %}
+          <a href="/blog/tag/{{ tag.name|slugify }}/" class="sidebar_tag_{{ tag.font_size }}">{{ tag.name }}</a>
+        {% endfor %}
+        <ul class="sidebar__ul--menu">
+          <li><a href="{% url 'blog_tags' %}" style="font-weight:bold;font-style: italic;">See all tags for this
+          blog &raquo;</a></li>
+        </ul>
+    </div>
+
+    <h3 class="sidebar__heading" id="sidebar_archive">Archive</h3>
+    <ul class="sidebar__ul--menu sidebar__ul--bottom">
+      <li class="sidebar__li--menu"><a href="{% url 'blog_archive_date' %}">Browse Posts By Date</a></li>
+      <li class="sidebar__li--menu"><a href="{% url 'blog_archive_title' %}">Browse Posts By Title</a></li>
+    </ul>
+  </div>
+  <a href="http://feeds.feedburner.com/colbypalmer/blog">
+    <img src="/static/img/icon_rss.png" id="rssBoxIcon" alt="RSS feed"/>
+
+    <p>RSS feed</p>
+  </a>
+</aside>
