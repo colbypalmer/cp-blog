@@ -15,4 +15,6 @@ urlpatterns = patterns('',
                            name='blog_entries_by_category'),
                        url(r'^tag/(?P<tag>[-_A-Za-z0-9]+)/$', 'blog.views.blog_entries_by_tag',
                            name="blog_entries_by_tag"),
+                       url(r'^grappelli/', include('grappelli.urls')),
+                       url(r'^admin/', include(admin.site.urls)),
                        )

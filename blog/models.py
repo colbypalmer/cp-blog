@@ -60,7 +60,7 @@ class BlogEntry(models.Model):
     body_markdown = models.TextField(blank=True)
     image = ImageWithThumbsField(blank=True, upload_to='blog', sizes=((200, 300), (600, 900)))
     category = models.ForeignKey(BlogCategory, blank=True)
-    tags = TagField()
+    tags = TaggableManager()
     status = models.CharField(max_length=2, choices=BLOG_ENTRY_STATUS)
     author = models.ForeignKey(User)
     active = models.BooleanField(default=True)
@@ -93,10 +93,6 @@ class BlogEntry(models.Model):
     def increment_count(self):
         self.view_count += 1
         models.Model.save(self)
-
-    def get_tag_objects(self):
-        """Returns real tag objects for given post"""
-        return Tag.objects.get_for_object(self)
 
     def save(self, *args, **kwargs):
         if not self.entry_date:
