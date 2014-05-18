@@ -1,16 +1,16 @@
 import datetime
-from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.comments.signals import comment_was_posted
 from django.core.mail import send_mail
+from django.db import models
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-from utils.thumbs import ImageWithThumbsField
-from positions import PositionField
 from django.utils.translation import ugettext_lazy as _
-import taggit
-from taggit.models import Tag
-from taggit.fields import TagField
-from django.conf import settings
+from markdown import markdown
+from positions import PositionField
+from taggit.managers import TaggableManager
+from utils.thumbs import ImageWithThumbsField
+
 
 BLOG_ENTRY_STATUS = (
     ("1", "Closed"),
@@ -57,6 +57,7 @@ class BlogEntry(models.Model):
         "a short version of the name consisting only of letters, numbers, underscores and hyphens."))
     description = models.CharField(blank=True, max_length=255)
     body = models.TextField(blank=True)
+    body_markdown = models.TextField(blank=True)
     image = ImageWithThumbsField(blank=True, upload_to='blog', sizes=((200, 300), (600, 900)))
     category = models.ForeignKey(BlogCategory, blank=True)
     tags = TagField()
@@ -100,6 +101,7 @@ class BlogEntry(models.Model):
     def save(self, *args, **kwargs):
         if not self.entry_date:
             self.entry_date = datetime.datetime.now()
+        self.body = markdown(self.body_markdown, ['codehilite'])
         super(BlogEntry, self).save(*args, **kwargs)
 
 

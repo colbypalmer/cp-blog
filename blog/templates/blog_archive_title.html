@@ -1,16 +1,17 @@
 {% extends 'blog/blog_base.html' %}
 {% load i18n %}
-{% load tagging_tags %}
+{% load taggit_extras %}
 
 {% block body_id %}pg_blog{% endblock %}
 
 {% block content_main %}
   <section class="main--right">
-    <h2>Blog Entries by Title</h2>
+    <h1 class="article__title article__title--list">Blog Entries by Title</h1>
 
     <ul class="list--fullsize">
       {% for item in entries %}
-        <li><a href="{% url 'blog_detail' item.slug %}">{{ item.title }} <span
+        <li class="list--fullsize__li">
+          <a href="{% url 'blog_detail' item.slug %}" class="list--fullsize__li__a list--fullsize__li__a--largetext">{{ item.title }} <span
             class="list--fullsize__note">{{ item.entry_date|date:"N j, Y" }}</span></a></li>
       {% endfor %}
     </ul>

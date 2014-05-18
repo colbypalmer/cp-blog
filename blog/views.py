@@ -77,7 +77,7 @@ def blog_search(request):
     matches = None
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
-        entry_query = get_query(query_string, ['title', 'description', 'body', 'tags'])
+        entry_query = get_query(query_string, ['title', 'description', 'body'])
         entries = BlogEntry.active_objects.filter(entry_query) or None
         try:
             paginator = Paginator(entries, 5)
@@ -102,8 +102,7 @@ def blog_entries_by_tag(request, tag, object_id=None, page=1):
     page_title = 'Entries with tag "%s"' % tag
     try:
         query_tag = Tag.objects.get(name=tag)
-        entries = TaggedItem.objects.get_by_model(BlogEntry, query_tag)
-        entries = entries.order_by('-entry_date')
+        entries = BlogEntry.objects.filter(tags__name__in=[tag]).order_by('-entry_date')
         paginator = Paginator(entries, 5)
         try:
             page = int(request.GET.get("page", '1'))

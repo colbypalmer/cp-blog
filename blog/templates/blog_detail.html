@@ -1,6 +1,6 @@
 {% extends 'blog/blog_base.html' %}
 {% load i18n %}
-{% load tagging_tags %}
+{% load taggit_extras %}
 {% load threadedcomments_tags %}
 {% load pygmentify %}
 {% load comments %}
@@ -8,18 +8,20 @@
 {% block body_id %}pg_blog{% endblock %}
 
 {% block content_main %}
-  <section class="main--right">
-    <article>
-      <h2><a href="{% url 'blog_detail' entry.slug %}">{{ entry.title }}</a></h2>
+  <section class="main--left">
+    <article class="main__article main__article--single">
+      <h1 class="article__title"><a href="{% url 'blog_detail' entry.slug %}">{{ entry.title }}</a></h1>
 
-      <h3>{{ entry.description }}</h3>
+      <h2 class="article__subtitle">{{ entry.description }}</h2>
 
-      {{ entry.body|safe|linebreaks|pygmentify }}
+      {{ entry.body|safe|pygmentify }}
 
-      <p class="article__meta">
-        Posted on <time pubdate="pubdate">{{ entry.entry_date }}</time>
-                  {% if entry.tags %}{% tags_for_object entry as blogpost_tags %}<span class="article__tags">
-                    Tags: {% for tag in blogpost_tags %} <a href="/blog/tag/{{ tag }}/">{{ tag }}</a> {% endfor %}
+      <p class="article--meta">
+        Posted on
+        <time pubdate="pubdate">{{ entry.entry_date }}</time>
+                  {% if entry.tags %}<span class="article__tags">
+                    Tags: {% for tag in entry.tags.all %} <a href="/blog/tag/{{ tag }}/">{{ tag }}</a>
+                        {% if not forloop.last %}, {% endif %}{% endfor %}
                     </span>{% endif %}
       </p>
 
@@ -30,32 +32,32 @@
 
           <a name="comments"></a>
 
-          <h4>Comments</h4>
+          <h3 class="article__comments__title">Comments</h3>
           <ul class="article__comments">
             {% for comment in comment_list|fill_tree|annotate_tree %}
               {% if comment.is_public %}
-                <li class="comment comment_{{ comment.depth }}{% if comment.last %} comment_last{% if not comment.open %} comment_close{% endif %}{% endif %}{% if not comment.close %}{% ifequal comment.depth 1 %} comment_open{% endifequal %}{% else %}{% ifequal comment.depth 1 %}{% if comment.open %} comment_close comment_open{% endif %}{% endifequal %}{% endif %}{% if not comment.parent_id %} ornament{% else %} reply_ornament{% endif %}">
+                <li class="comments__comment comment_
+                        {{ comment.depth }}{% if comment.last %} comment_last{% if not comment.open %} comment_close{% endif %}{% endif %}{% if not comment.close %}{% ifequal comment.depth 1 %} comment_open{% endifequal %}{% else %}{% ifequal comment.depth 1 %}{% if comment.open %} comment_close comment_open{% endif %}{% endifequal %}{% endif %}{% if not comment.parent_id %} ornament{% else %} reply_ornament{% endif %}">
                   <a name="c{{ comment.id }}"></a>
                   {{ comment.comment|urlize|linebreaks }}
-                  <p class="comment_meta">
+                  <p class="comment__meta">
                     Posted by: {% if comment.url %}<a href="{{ comment.url }}">{{ comment.name }}
                     </a>{% else %}{{ comment.name }}{% endif %}{% if comment.parent_id %} in reply
                     to{% if comment.parent.url %}<a href="{{ comment.parent.url }}">
-                                    {{ comment.parent.name }}</a>{% else %}{{ comment.parent.name }}
-                                  {% endif %}{% endif %} on {{ comment.submit_date|date }}<span
-                      class="permalink_wrap"> &bull; <a
-                      href="{% url 'blog_detail' entry.slug %}#c{{ comment.id }}" class="permalink">permalink</a></span>
+                      {{ comment.parent.name }}</a>{% else %}{{ comment.parent.name }}
+                    {% endif %}{% endif %} on {{ comment.submit_date|date }}<span
+                      class="comment__permalink_wrap"> &bull; <a
+                      href="{% url 'blog_detail' entry.slug %}#c{{ comment.id }}" class="comment__permalink">permalink</a></span>
                     {# DEPTH {{ comment.depth }} CLOSE {{ comment.close }} OPEN {{ comment.open }} #}
-                    <a id="c_{{ comment.id }}" class="comment_reply"
+                    <a id="c_{{ comment.id }}" class="comment__reply"
                        href="javascript:show_comment_reply('{{ comment.id }}','{{ comment.name }}')">Reply
-                      <span class="comment_reply_icon">  ↩</span></a>
+                      <span class="comment__reply_icon">  ↩</span></a>
                   </p>
 
                 </li>
               {% endif %}
             {% endfor %}
           </ul>
-
         {% endif %}
 
         {% if entry.comments_open %}
@@ -76,8 +78,7 @@
                         </li>
                       {% else %}
                         <li {% if field.errors %} class="error"{% endif %}
-                            {% ifequal field.name "honeypot" %}
-                                                  style="display:none;"{% endifequal %}>
+                            {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
                           {{ field.label_tag }}{{ field }}
                         </li>
                       {% endifequal %}
@@ -101,6 +102,7 @@
   </section>
 {% endblock %}
 
+{% comment %}
 {% block extra_javascript %}
 
   function show_comment_reply(parent_id, reply_to_name){
@@ -163,3 +165,4 @@
   }
   });
 {% endblock %}
+{% endcomment %}

@@ -1,17 +1,18 @@
 {% extends 'blog/base.html' %}
 {% load i18n %}
-{% load tagging_tags %}
+{% load taggit_extras %}
 
 {% block body_id %}pg_blog{% endblock %}
 
 {% block content_main %}
-  <section class="main--right">
-    <h2>Tags used in this blog</h2>
+  <section class="main--left">
+    <h1 class="article__title">Tags used in this blog:</h1>
 
     <div class="tag_cloud_lg">
-      {% tag_cloud_for_model blog.BlogEntry as tags with steps=8 distribution=log %}
+      {% get_tagcloud as tags for 'blog.BlogEntry' %}
       {% for tag in tags %}
-        <a href="/blog/tag/{{ tag.name|slugify }}/" class="main_tag main_tag_{{ tag.font_size }}">{{ tag.name }}</a>
+        <a href="/blog/tag/{{ tag.name|slugify }}/"
+           class="main_tag main_tag_{{ tag.weight|floatformat:'0' }}">{{ tag.name }}</a>
       {% endfor %}
     </div>
   </section>

@@ -1,6 +1,6 @@
 {% extends 'blog/blog_base.html' %}
 {% load i18n %}
-{% load tagging_tags %}
+{% load taggit_extras %}
 {% load threadedcomments_tags %}
 {% load comments %}
 {% load pygmentify %}
@@ -8,13 +8,16 @@
 {% block body_id %}pg_blog{% endblock %}
 
 {% block content_main %}
-  <section class="main--right">
+  <section class="main--left">
 
-    {% if category %}<h1>All entries matching the category <em>{{ category }}</em></h2>
-    {% endif %}
-    {% if tag %}<h1>All entries with the tag <em>{{ tag }}</em></h2>{% endif %}
-    {% if query_string %}
-      <h1>All entries matching the search <em>&quot;{{ query_string }}&quot;</em></h2>
+    {% if category %}
+      <h1 class="main__title--context">Entries from the <em>{{ category }}</em> category</h1>
+    {% elif tag %}
+      <h1 class="main__title--context">Entries tagged <em>{{ tag }}</em></h1>
+    {% elif query_string %}
+      <h1 class="main__title--context">Entries matching search <em>&quot;{{ query_string }}&quot;</em></h1>
+    {% else %}
+      <h1 class="main__title--context">Recent Entries</h1>
     {% endif %}
 
     {% if not entries %}
@@ -26,14 +29,15 @@
 
         <h2 class="article__subtitle">{{ o.description }}</h2>
 
-        {{ o.body|safe|linebreaks|pygmentify }}
-        {% if not o.comments_open %}<p class="article__note">Comments on this post are closed.
-          </p>{% endif %}
+        {{ o.body|safe|pygmentify }}
+        {% if not o.comments_open %}<p class="article__note">Comments on this post are closed.</p>{% endif %}
         <p class="article--meta">
-          Posted on <time pubdate="pubdate">{{ o.entry_date }}</time>
-                    {% if o.tags %}{% tags_for_object o as blogpost_tags %}<span class="article__tags">
-                      Tags: {% for tag in blogpost_tags %}
-                        <a href="/blog/tag/{{ tag }}/">{{ tag }}</a> {% endfor %}</span>{% endif %}
+          Posted on
+          <time pubdate="pubdate">{{ o.entry_date }}</time>
+                    {% if o.tags %}<span class="article__tags">
+                      Tags: {% for tag in o.tags.all %}
+                        <a href="/blog/tag/{{ tag }}/">{{ tag }}</a>{% if not forloop.last %},
+                        {% endif %}{% endfor %}</span>{% endif %}
         </p>
         <a name="comments"></a>
         {% get_comment_count for o as comment_count %}
