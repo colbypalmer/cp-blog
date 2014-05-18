@@ -11,3 +11,27 @@ This basic blog template includes:
 5. Basic Templates
 
 Version: 0.01a
+
+This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
+
+
+Quick start
+-----------
+
+1. Add "blog" to your INSTALLED_APPS setting like this::
+
+    INSTALLED_APPS = (
+        ...
+        'blog',
+    )
+
+2. Include the blog URLconf in your project urls.py like this::
+
+    `url(r'^blog/', include('blog.urls')),`
+
+3. Run `python manage.py migrate` to create the blog models.
+
+4. Start the development server and visit http://127.0.0.1:8000/admin/blog/blogentry/
+   to create a blog entry (you'll need the Admin app enabled).
+
+5. Visit http://127.0.0.1:8000/blog/ to see your blog.

@@ -1,0 +1,57 @@
+Metadata-Version: 1.1
+Name: django-cp-blog
+Version: 0.01a
+Summary: A basic blog app for Django.
+Home-page: http://github.com/colbypalmer/cp-blog/
+Author: Colby Palmer
+Author-email: colby@colbypalmer.com
+License: MIT License
+Description: # Colby's Basic Blog
+        
+        _Note: This is not quite ready for production. Working on an admin interface in the near future._
+        
+        This basic blog template includes:
+        
+        1. Posts
+        2. Categories
+        3. Tags
+        4. Feeds
+        5. Basic Templates
+        
+        Version: 0.01a
+        
+        This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
+        
+        
+        Quick start
+        -----------
+        
+        1. Add "blog" to your INSTALLED_APPS setting like this::
+        
+            INSTALLED_APPS = (
+                ...
+                'blog',
+            )
+        
+        2. Include the blog URLconf in your project urls.py like this::
+        
+            `url(r'^blog/', include('blog.urls')),`
+        
+        3. Run `python manage.py migrate` to create the blog models.
+        
+        4. Start the development server and visit http://127.0.0.1:8000/admin/blog/blogentry/
+           to create a blog entry (you'll need the Admin app enabled).
+        
+        5. Visit http://127.0.0.1:8000/blog/ to see your blog.
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
