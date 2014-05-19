@@ -18,11 +18,14 @@ This is set up to work with [cp-project-template](https://github.com/colbypalmer
 Quick start
 -----------
 
-1. Add "blog" to your INSTALLED_APPS setting like this::
+1. Add "grappelli" to the beginning of your INSTALLED_APPS and "blog", "taggit", and "taggit-tags" to the end:
 
     INSTALLED_APPS = (
-        ...
+        'grappelli',
+        ... OTHER SETTINGS ...
         'blog',
+        'taggit',
+        'taggit_templatetags',
     )
 
 2. Include the blog URLconf in your project urls.py like this::
