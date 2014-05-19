@@ -30,4 +30,16 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    install_requires=[
+        'Markdown==2.4',
+        'django-recaptcha==0.0.9',
+        'Pillow==2.3.0',
+        'pygments==1.6',
+        'South==0.8.4',
+        'django-taggit==0.11.2',
+        'django-taggit-templatetags',
+        'django-grappelli==2.5.3',
+        'django-epiceditor==0.2.2',
+        'django-positions==0.5.1',
+    ],
 )
