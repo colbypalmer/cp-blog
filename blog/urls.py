@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 from blog.feeds import LatestEntriesRssFeed, LatestEntriesAtomFeed
+
+admin.autodiscover()
 
 urlpatterns = patterns('',
                        url(r'^$', 'blog.views.blog_list', name='blog'),
