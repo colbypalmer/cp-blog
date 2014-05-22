@@ -5,7 +5,7 @@ from blog.feeds import LatestEntriesRssFeed, LatestEntriesAtomFeed
 admin.autodiscover()
 
 urlpatterns = patterns('',
-                       url(r'^$', 'blog.views.blog_list', name='blog'),
+                       url(r'^/$', 'blog.views.blog_list', name='blog'),
                        url(r'^rss/$', LatestEntriesRssFeed(), name='blog_rss'),
                        url(r'^atom/$', LatestEntriesAtomFeed(), name='blog_atom'),
                        url(r'^tags/$', 'blog.views.blog_tags', name="blog_tags"),

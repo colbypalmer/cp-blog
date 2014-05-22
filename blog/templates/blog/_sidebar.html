@@ -7,7 +7,6 @@
     <input type="text" name="q" value="" placeholder="Search..." id="search__input" class="search__input"/>
   </form>
 
-
   <h3 class="sidebar__heading">Recent Posts</h3>
   <ul class="sidebar__ul--menu">
     {% for item in recent %}
@@ -28,17 +27,17 @@
   </ul>
 
   <h3 class="sidebar__heading">Tags</h3>
-    <div class='sidebar_tagcloud'>
-      {% get_tagcloud as blog_tags for 'blog.BlogEntry' %}{
-      {% for tag in blog_tags %}
-        {# {% if tag.weight|floatformat:0 != '1' %} #}
-        <a href="/blog/tag/{{ tag.name|slugify }}/" class="sidebar_tag_{{ tag.weight|floatformat:0 }}">{{ tag.name }}</a>
-        {# {% endif %} #}
-      {% endfor %}
-      <ul class="sidebar__ul--menu sidebar__ul--note">
-        <li><a href="{% url 'blog_tags' %}" class="sidebar__tagcloud__note">See all tags for this
-        blog &raquo;</a></li>
-      </ul>
+  <div class='sidebar_tagcloud'>
+    {% get_tagcloud as blog_tags for 'blog.BlogEntry' %}{
+    {% for tag in blog_tags %}
+      {# {% if tag.weight|floatformat:0 != '1' %} #}
+      <a href="/blog/tag/{{ tag.name|slugify }}/" class="sidebar_tag_{{ tag.weight|floatformat:0 }}">{{ tag.name }}</a>
+      {# {% endif %} #}
+    {% endfor %}
+    <ul class="sidebar__ul--menu sidebar__ul--note">
+      <li><a href="{% url 'blog_tags' %}" class="sidebar__tagcloud__note">See all tags for this
+      blog &raquo;</a></li>
+    </ul>
   </div>
 
   <h3 class="sidebar__heading" id="sidebar_archive">Archive</h3>
