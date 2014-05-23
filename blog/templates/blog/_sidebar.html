@@ -1,4 +1,4 @@
-{% load tagging_tags %}
+{% load taggit_extras %}
 
 <aside class="sidebar--right" id="sidebar_blog">
 
@@ -28,7 +28,7 @@
 
   <h3 class="sidebar__heading">Tags</h3>
   <div class='sidebar_tagcloud'>
-    {% get_tagcloud as blog_tags for 'blog.BlogEntry' %}{
+    {% get_tagcloud as blog_tags for 'blog.BlogEntry' %}
     {% for tag in blog_tags %}
       {# {% if tag.weight|floatformat:0 != '1' %} #}
       <a href="/blog/tag/{{ tag.name|slugify }}/" class="sidebar_tag_{{ tag.weight|floatformat:0 }}">{{ tag.name }}</a>
@@ -46,7 +46,7 @@
     <li class="sidebar__li--menu"><a href="{% url 'blog_archive_title' %}" class="sidebar__li__a">Browse Posts By Title</a></li>
   </ul>
 
-  <a href="{% url blog_rss %}" class="sidebar__rss">
+  <a href="{% url 'blog_rss' %}" class="sidebar__rss">
     <p class="sidebar__rss__p">RSS feed</p>
   </a>
 </aside>

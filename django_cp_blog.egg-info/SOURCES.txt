@@ -11,7 +11,6 @@ blog/settings_example.py
 blog/tests.py
 blog/urls.py
 blog/views.py
-blog/templates/base.html
 blog/templates/blog/_sidebar.html
 blog/templates/blog/blog_archive_date.html
 blog/templates/blog/blog_archive_title.html
@@ -19,6 +18,9 @@ blog/templates/blog/blog_base.html
 blog/templates/blog/blog_detail.html
 blog/templates/blog/blog_list.html
 blog/templates/blog/blog_tags.html
+blog/templatetags/.DS_Store
+blog/templatetags/__init__.py
+blog/templatetags/blog_tags.py
 django_cp_blog.egg-info/PKG-INFO
 django_cp_blog.egg-info/SOURCES.txt
 django_cp_blog.egg-info/dependency_links.txt
