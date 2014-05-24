@@ -15,6 +15,6 @@ TAGGIT_TAGCLOUD_MAX = 8
 GRAPPELLI_ADMIN_TITLE = u'{} Administration'.format(SITE_NAME)
 
 INSTALLED_APPS = (
+    'grappelli', # this should go first in the entire list
     'blog',
-    'django-grappelli',
 )
