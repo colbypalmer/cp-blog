@@ -1,7 +1,6 @@
 {% extends 'blog/blog_base.html' %}
 {% load i18n %}
 {% load taggit_extras %}
-{% load threadedcomments_tags %}
 {% load pygmentify %}
 {% load comments %}
 
@@ -25,6 +24,7 @@
                     </span>{% endif %}
       </p>
 
+      {% comment %}
       {% if entry.allow_comments %}
 
         {% get_comment_list for entry as comment_list %}
@@ -97,7 +97,7 @@
         {% endif %}
 
       {% endif %} {# end of "if entry.allow_comments" #}
-
+      {% endcomment %}
     </article>
   </section>
 {% endblock %}
