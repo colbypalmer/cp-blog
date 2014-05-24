@@ -91,6 +91,8 @@ class BlogEntry(models.Model):
         return '/blog/%s/' % self.slug
 
     def increment_count(self):
+        if not self.view_count:
+            self.view_count = 0
         self.view_count += 1
         models.Model.save(self)
 
