@@ -10,6 +10,7 @@ class BlogEntryAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description', 'body']
     actions = ['delete_selected', 'make_active', 'make_inactive']
     form = BlogEntryAdminForm
+    prepopulated_fields = {"slug": ("title",)}
 
     def make_active(self, request, queryset):
         queryset.update(active=True)
@@ -25,6 +26,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
     list_filter = ['active']
     search_fields = ['title']
     actions = ['delete_selected', 'make_active', 'make_inactive']
+    prepopulated_fields = {"slug": ("title",)}
 
     def make_active(self, request, queryset):
         queryset.update(active=True)
