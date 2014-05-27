@@ -27,7 +27,7 @@
   </ul>
 
   <h3 class="sidebar__heading">Tags</h3>
-  <div class='sidebar_tagcloud'>
+  <div class='sidebar__tagcloud'>
     {% get_tagcloud as blog_tags for 'blog.BlogEntry' %}
     {% for tag in blog_tags %}
       {# {% if tag.weight|floatformat:0 != '1' %} #}
@@ -46,7 +46,7 @@
     <li class="sidebar__li--menu"><a href="{% url 'blog_archive_title' %}" class="sidebar__li__a">Browse Posts By Title</a></li>
   </ul>
 
-  <a href="{% url 'blog_rss' %}" class="sidebar__rss">
-    <p class="sidebar__rss__p">RSS feed</p>
-  </a>
+  <p class="sidebar__rss__p">
+    <a href="{% url 'blog_rss' %}" class="sidebar__rss">RSS feed</a>
+  </p>
 </aside>
