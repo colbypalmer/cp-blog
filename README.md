@@ -14,6 +14,11 @@ Version: 0.01a
 
 This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
 
+Installation
+-----------
+
+`pip install http://github.com/colbypalmer/django-cp-blog/dist/django-cp-blog-0.01a.tar.gz`
+
 
 Quick start
 -----------
