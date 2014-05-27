@@ -13,6 +13,12 @@
 
       <h2 class="article__subtitle">{{ entry.description }}</h2>
 
+      {% if entry.image %}
+        <div class="article__image_wrap">
+          <img src="{{ MEDIA_URL }}{{ entry.image }}" alt="{{ entry.title }}" class="article__image--main"/>
+        </div>
+      {% endif %}
+
       {{ entry.body|safe|pygmentify }}
 
       <p class="article--meta">

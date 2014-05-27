@@ -28,6 +28,12 @@
 
         <h2 class="article__subtitle">{{ o.description }}</h2>
 
+        {% if o.image %}
+          <div class="article__image_wrap">
+            <img src="{{ MEDIA_URL }}{{ o.image }}" alt="{{ o.title }}" class="article__image--main"/>
+          </div>
+        {% endif %}
+
         {{ o.body|safe|pygmentify }}
         {% if not o.comments_open %}<p class="article__note">Comments on this post are closed.</p>{% endif %}
         <p class="article--meta">
