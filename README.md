@@ -23,12 +23,13 @@ Installation
 Quick start
 -----------
 
-1. Add "grappelli" to the beginning of your INSTALLED_APPS and "blog", "taggit", and "taggit-tags" to the end:
+1. Add "grappelli" to the beginning of your INSTALLED_APPS and "blog", "epiceditor", "taggit", and "taggit-tags" to the end:
 
     INSTALLED_APPS = (
         'grappelli',
         ... OTHER SETTINGS ...
         'blog',
+        'epiceditor',
         'taggit',
         'taggit_templatetags',
     )
