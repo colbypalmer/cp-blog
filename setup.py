@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-cp-blog',
-    version='0.01a',
+    version='0.1.1',
     packages=['blog'],
     include_package_data=True,
     license='MIT License',  # example license
