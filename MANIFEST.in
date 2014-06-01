@@ -2,3 +2,4 @@ include LICENSE
 include README.md
 recursive-include blog/templates *
 recursive-include blog/templatetags *
+recursive-include blog/utils *

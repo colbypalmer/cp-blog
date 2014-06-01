@@ -21,6 +21,8 @@ blog/templates/blog/blog_tags.html
 blog/templatetags/.DS_Store
 blog/templatetags/__init__.py
 blog/templatetags/blog_tags.py
+blog/utils/__init__.py
+blog/utils/thumbs.py
 django_cp_blog.egg-info/PKG-INFO
 django_cp_blog.egg-info/SOURCES.txt
 django_cp_blog.egg-info/dependency_links.txt
