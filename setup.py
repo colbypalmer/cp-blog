@@ -38,6 +38,5 @@ setup(
         'South==0.8.4',
         'django-grappelli==2.5.3',
         'django-epiceditor==0.2.2',
-        'django-positions==0.5.1',
     ],
 )
