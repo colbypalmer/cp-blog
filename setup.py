@@ -37,7 +37,7 @@ setup(
         'pygments==1.6',
         'South==0.8.4',
         'django-taggit==0.11.2',
-        'django-taggit-templatetags',
+        'django-taggit-templatetags==0.4.6dev',
         'django-grappelli==2.5.3',
         'django-epiceditor==0.2.2',
         'django-positions==0.5.1',
