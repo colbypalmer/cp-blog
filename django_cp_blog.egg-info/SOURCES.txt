@@ -18,7 +18,6 @@ blog/templates/blog/blog_base.html
 blog/templates/blog/blog_detail.html
 blog/templates/blog/blog_list.html
 blog/templates/blog/blog_tags.html
-blog/templatetags/.DS_Store
 blog/templatetags/__init__.py
 blog/templatetags/blog_tags.py
 blog/utils/__init__.py
