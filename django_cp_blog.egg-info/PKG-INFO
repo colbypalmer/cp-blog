@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: django-cp-blog
-Version: 0.1.2
+Version: 0.1.3
 Summary: A basic blog app for Django.
 Home-page: http://github.com/colbypalmer/cp-blog/
 Author: Colby Palmer
