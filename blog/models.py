@@ -60,14 +60,14 @@ class BlogEntry(models.Model):
     body_markdown = models.TextField(blank=True)
     image = ImageWithThumbsField(blank=True, upload_to='blog', sizes=((200, 300), (600, 900)))
     category = models.ForeignKey(BlogCategory, blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     status = models.CharField(max_length=2, choices=BLOG_ENTRY_STATUS)
     author = models.ForeignKey(User)
     active = models.BooleanField(default=True)
     allow_comments = models.BooleanField(default=True)
     comments_open = models.BooleanField(default=True)
     sticky = models.BooleanField(default=False)
-    view_count = models.IntegerField(blank=True, null=True)
+    view_count = models.IntegerField(blank=True, null=True, default=0)
     entry_date = models.DateTimeField(blank=True, null=True, auto_now_add=True, editable=True,
                                       default=datetime.datetime.now)
     edited_date = models.DateTimeField(blank=True, null=True, auto_now=True, auto_now_add=True, editable=True,
@@ -84,6 +84,13 @@ class BlogEntry(models.Model):
     class Meta:
         verbose_name = _('Blog Entry')
         verbose_name_plural = _('Blog Entries')
+
+    @property
+    def status_display(self):
+        choices = BLOG_ENTRY_STATUS
+        for o in choices:
+            if str(self.status) in o:
+                return o[1]
 
     #    @models.permalink
     def get_absolute_url(self):
