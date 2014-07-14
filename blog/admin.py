@@ -11,6 +11,8 @@ class BlogEntryAdmin(admin.ModelAdmin):
     actions = ['delete_selected', 'make_active', 'make_inactive']
     form = BlogEntryAdminForm
     prepopulated_fields = {"slug": ("title",)}
+    exclude = ('old_date',)
+    readonly_fields = ('view_count',)
 
     def make_active(self, request, queryset):
         queryset.update(active=True)
