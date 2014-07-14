@@ -26,7 +26,11 @@
       <article class="main__article">
         <h1 class="article__title"><a href="{% url 'blog_detail' o.slug %}">{{ o.title }}</a></h1>
 
-        <h2 class="article__subtitle">{{ o.description }}</h2>
+        {% if o.description %}<h2 class="article__subtitle">{{ o.description }}</h2>{% endif %}
+
+        {% if o.status != 2 %}
+        <p class="flash--notice">This article is not published! Its status is {{ o.status_display }}.</p>
+        {% endif %}
 
         {% if o.image %}
           <div class="article__image_wrap">
