@@ -31,9 +31,11 @@ def blog_list(request):
 
 
 def blog_detail(request, slug):
-    slug_str = str(slug)
-    entry = get_object_or_404(BlogEntry, slug=slug_str)
-    entry.increment_count()
+    if request.user.is_staff:
+        entry = get_object_or_404(BlogEntry, slug=slug)
+    else:
+        entry = get_object_or_404(BlogEntry, slug=slug, status='2')
+        entry.increment_count()
     return render_to_response('blog/blog_detail.html',
                               {'entry': entry, 'page_title': entry.title, 'months': mkmonth_lst()},
                               context_instance=RequestContext(request))
@@ -46,7 +48,11 @@ def blog_archive_date(request):
 
 
 def blog_archive_title(request):
-    entries = BlogEntry.active_objects.all().order_by('-entry_date')
+    if request.user.is_staff:
+        entries = BlogEntry.active_objects.all().order_by('-entry_date')
+    else:
+        entries = BlogEntry.active_objects.filter(status='2').order_by('-entry_date')
+
     return render_to_response('blog/blog_archive_title.html',
                               {'entries': entries, 'page_title': 'Blog Entries by Title'},
                               context_instance=RequestContext(request))
@@ -55,7 +61,12 @@ def blog_archive_title(request):
 def blog_entries_by_category(request, slug):
     slug_str = str(slug)
     category = BlogCategory.objects.filter(slug=slug_str)
-    entries = BlogEntry.active_objects.filter(category=category).order_by('-entry_date')
+
+    if request.user.is_staff:
+        entries = BlogEntry.active_objects.filter(category=category).order_by('-entry_date')
+    else:
+        entries = BlogEntry.active_objects.filter(category=category, status='2').order_by('-entry_date')
+
     paginator = Paginator(entries, 5)
     try:
         page = int(request.GET.get("page", '1'))
@@ -83,7 +94,12 @@ def blog_search(request):
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         entry_query = get_query(query_string, ['title', 'description', 'body'])
-        entries = BlogEntry.active_objects.filter(entry_query) or None
+
+        if request.user.is_staff:
+            entries = BlogEntry.active_objects.filter(entry_query) or None
+        else:
+            entries = BlogEntry.active_objects.filter(status='2').filter(entry_query) or None
+
         try:
             paginator = Paginator(entries, 5)
             try:
@@ -107,7 +123,12 @@ def blog_entries_by_tag(request, tag, object_id=None, page=1):
     page_title = 'Entries with tag "%s"' % tag
     try:
         query_tag = Tag.objects.get(name=tag)
-        entries = BlogEntry.objects.filter(tags__name__in=[tag]).order_by('-entry_date')
+
+        if request.user.is_staff:
+            entries = BlogEntry.objects.filter(tags__name__in=[tag]).order_by('-entry_date')
+        else:
+            entries = BlogEntry.objects.filter(status='2').filter(tags__name__in=[tag]).order_by('-entry_date')
+
         paginator = Paginator(entries, 5)
         try:
             page = int(request.GET.get("page", '1'))
@@ -131,7 +152,7 @@ def mkmonth_lst():
 
     # set up vars
     year, month = time.localtime()[:2]
-    first = BlogEntry.active_objects.order_by("entry_date")[0]
+    first = BlogEntry.active_objects.filter(status='2').order_by("entry_date")[0]
     fyear = first.entry_date.year
     fmonth = first.entry_date.month
     months = []
@@ -150,7 +171,12 @@ def mkmonth_lst():
 
 def month(request, year, month):
     """Monthly archive."""
-    entries = BlogEntry.active_objects.filter(entry_date__year=year, entry_date__month=month)
+
+    if request.user.is_staff:
+        entries = BlogEntry.active_objects.filter(entry_date__year=year, entry_date__month=month)
+    else:
+        entries = BlogEntry.active_objects.filter(status='2', entry_date__year=year, entry_date__month=month)
+
     paginator = Paginator(entries, 5)
     page_title = 'Entries from %s, %s' % (month, year)
     try:
