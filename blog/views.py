@@ -11,7 +11,12 @@ from calendar import month_name
 
 
 def blog_list(request):
-    entries = BlogEntry.active_objects.all().order_by('-entry_date')
+
+    if request.user.is_staff:
+        entries = BlogEntry.active_objects.all().order_by('-entry_date')
+    else:
+        entries = BlogEntry.active_objects.filter(status="2").order_by('-entry_date')
+
     paginator = Paginator(entries, 5)
     try:
         page = int(request.GET.get("page", '1'))
