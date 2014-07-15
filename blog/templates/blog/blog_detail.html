@@ -14,7 +14,7 @@
 
       {% if entry.description %}<h2 class="article__subtitle">{{ entry.description }}</h2>{% endif %}
 
-      {% if entry.status != 2 %}
+      {% if o.status_display != 'Public' %}
       <p class="flash--notice">This article is not published! Its status is {{ entry.status_display }}.</p>
       {% endif %}
 
