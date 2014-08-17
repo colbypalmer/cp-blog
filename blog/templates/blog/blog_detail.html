@@ -4,6 +4,15 @@
 {% load pygmentify %}
 {% load comments %}
 
+{% block og_title %}{{ entry.title }}{% endblock %}
+
+{% block og_description %}{% if entry.description %}{% autoescape off %}{{ entry.description|addslashes }}{% endautoescape %} {% endif %}{% autoescape off %}{{ entry.body|striptags|addslashes|truncatewords:"40" }}{% endautoescape %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block og_img %}{% if entry.image.url_600x900 != '' %}{{ MEDIA_URL }}{{ entry.image.url_600x900 }}{% else %}{{ STATIC_URL }}img/logo_main.png{% endif %}{% endblock %}
+
+
 {% block body_id %}pg_blog{% endblock %}
 
 {% block content_main %}
