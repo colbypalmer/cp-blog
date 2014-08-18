@@ -4,8 +4,8 @@
 {% load comments %}
 {% load pygmentify %}
 
+{% block meta_description %}My blog. This page lists {% if category %}entries from the {{ category }} category{% elif tag %}entries tagged {{ tag }}{% elif query_string %}entries matching search: {{ query_string }}{% else %}all recent entries{% endif %}.{% endblock %}
 {% block og_title %}{% if category %}Entries from the {{ category }} category{% elif tag %}Entries tagged {{ tag }}{% elif query_string %}Entries matching search: {{ query_string }}{% else %}Recent Entries{% endif %}{% endblock og_title %}
-
 {% block og_description %}My blog. This page lists {% if category %}entries from the {{ category }} category{% elif tag %}entries tagged {{ tag }}{% elif query_string %}entries matching search: {{ query_string }}{% else %}all recent entries{% endif %}.{% endblock %}
 
 {% block body_id %}pg_blog{% endblock %}
