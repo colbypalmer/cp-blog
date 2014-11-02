@@ -35,7 +35,6 @@ setup(
         'django-recaptcha==0.0.9',
         'Pillow==2.3.0',
         'pygments==1.6',
-        'South==0.8.4',
         'django-grappelli==2.5.3',
         'django-epiceditor==0.2.2',
     ],
