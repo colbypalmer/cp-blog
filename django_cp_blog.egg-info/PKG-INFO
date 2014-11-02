@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: django-cp-blog
-Version: 0.2.0
+Version: 0.2.1
 Summary: A basic blog app for Django.
 Home-page: http://github.com/colbypalmer/cp-blog/
 Author: Colby Palmer
@@ -17,8 +17,9 @@ Description: # Colby's Basic Blog
         3. Tags
         4. Feeds
         5. Basic Templates
+        6. Optional comments via Disqus
         
-        Version: 0.2.0
+        Version: 0.2.1
         
         This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
         
@@ -57,6 +58,7 @@ Description: # Colby's Basic Blog
         
         
         TODO: Document OpenGraph tags and location of base.html
+        
 Platform: UNKNOWN
 Classifier: Environment :: Web Environment
 Classifier: Framework :: Django
