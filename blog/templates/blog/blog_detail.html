@@ -2,7 +2,6 @@
 {% load i18n %}
 {% load taggit_extras %}
 {% load pygmentify %}
-{% load comments %}
 
 {% block head_prefix %}og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#{% endblock %}
 {% block meta_description %}{% if entry.description %}{% autoescape off %}{{ entry.description|addslashes }}{% endautoescape %} {% endif %}{% autoescape off %}{{ entry.body|striptags|addslashes|truncatewords:"40" }}{% endautoescape %}{% endblock %}
@@ -42,145 +41,25 @@
                     </span>{% endif %}
       </p>
 
-      {% comment %}
-      {% if entry.allow_comments %}
+      {% if disqus_shortname and entry.allow_comments %}
+        <a name="disqus_thread"></a>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES * * */
+          var disqus_shortname = '{{ disqus_shortname }}';
+          var disqus_identifier = '{{ entry.id }}';
+          var disqus_title = '{{ entry.title }}';
+          var disqus_url = window.location.origin + '{{ entry.get_absolute_url }}';
 
-        {% get_comment_list for entry as comment_list %}
-        {% if comment_list %}
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      {% endif %} {# end of "if disqus_shortname and entry.allow_comments" #}
 
-          <a name="comments"></a>
-
-          <h3 class="article__comments__title">Comments</h3>
-          <ul class="article__comments">
-            {% for comment in comment_list|fill_tree|annotate_tree %}
-              {% if comment.is_public %}
-                <li class="comments__comment comment_
-                        {{ comment.depth }}{% if comment.last %} comment_last{% if not comment.open %} comment_close{% endif %}{% endif %}{% if not comment.close %}{% ifequal comment.depth 1 %} comment_open{% endifequal %}{% else %}{% ifequal comment.depth 1 %}{% if comment.open %} comment_close comment_open{% endif %}{% endifequal %}{% endif %}{% if not comment.parent_id %} ornament{% else %} reply_ornament{% endif %}">
-                  <a name="c{{ comment.id }}"></a>
-                  {{ comment.comment|urlize|linebreaks }}
-                  <p class="comment__meta">
-                    Posted by: {% if comment.url %}<a href="{{ comment.url }}">{{ comment.name }}
-                    </a>{% else %}{{ comment.name }}{% endif %}{% if comment.parent_id %} in reply
-                    to{% if comment.parent.url %}<a href="{{ comment.parent.url }}">
-                      {{ comment.parent.name }}</a>{% else %}{{ comment.parent.name }}
-                    {% endif %}{% endif %} on {{ comment.submit_date|date }}<span
-                      class="comment__permalink_wrap"> &bull; <a
-                      href="{% url 'blog_detail' entry.slug %}#c{{ comment.id }}" class="comment__permalink">permalink</a></span>
-                    {# DEPTH {{ comment.depth }} CLOSE {{ comment.close }} OPEN {{ comment.open }} #}
-                    <a id="c_{{ comment.id }}" class="comment__reply"
-                       href="javascript:show_comment_reply('{{ comment.id }}','{{ comment.name }}')">Reply
-                      <span class="comment__reply_icon">  ↩</span></a>
-                  </p>
-
-                </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        {% endif %}
-
-        {% if entry.comments_open %}
-          <div class="comment_form">
-            <h4 class="blogpost_subtitle">Reply to Original Post:</h4>
-            <a name="comments"></a>
-            {% get_comment_form for entry as form %}
-            <form id="comment_orig_form" action="/comments/post/" method="post">
-              <ul>
-                {% for field in form %}
-                  {% ifnotequal field.name "title" %}
-                    {% if field.is_hidden %}
-                      <li style="display:none;">{{ field }}</li>
-                    {% else %}
-                      {% ifequal field.name "comment" %}
-                        <li class="comment_form_textarea{% if field.errors %} error{% endif %}">
-                          {{ field.label_tag }}{{ field }}
-                        </li>
-                      {% else %}
-                        <li {% if field.errors %} class="error"{% endif %}
-                            {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
-                          {{ field.label_tag }}{{ field }}
-                        </li>
-                      {% endifequal %}
-                    {% endif %}
-                  {% endifnotequal %}
-                {% endfor %}
-              </ul>
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{% url 'blog_detail' entry.slug %}#comments"/>
-              <input type="submit" value="Submit Comment" id="comment_form_submit"/>
-              <input type="submit" value="Preview Comment" name="preview" id="comment_form_preview"/>
-            </form>
-          </div>
-        {% else %}
-          <p class="article__note">Comments on this post are closed.</p>
-        {% endif %}
-
-      {% endif %} {# end of "if entry.allow_comments" #}
-      {% endcomment %}
     </article>
   </section>
 {% endblock %}
-
-{% comment %}
-{% block extra_javascript %}
-
-  function show_comment_reply(parent_id, reply_to_name){
-  var reply_btn = $('#c_' + parent_id);
-  var old_form = $("#comment_orig_form").html();
-  var new_form = $( new Array(
-  '
-  <div class="comment_form comment_form_reply"><p class="comment_reply_title">Reply to ' + reply_to_name + ':</p>',
-    '
-    <form action="/comments/post/" method="post">',
-      old_form,
-      '<input type="hidden" name="parent" value="' + parent_id + '" id="id_parent"
-              rel="comment_' + parent_id + '"/>',
-      '
-    </form>
-  </div>').join(''));
-  reply_btn.after(new_form);
-  new_form.fadeIn(function() {
-  reply_btn.replaceWith('<a id="c_' + parent_id + '" class="comment_reply" style="padding-right: 4px;"
-                            href="javascript:hide_comment_reply('+ parent_id +');" rel="' + reply_to_name + '">Cancel
-  Reply &nbsp;</a>');
-  });
-  }
-
-  function hide_comment_reply(parent_id){
-  var reply_btn = $('#c_' + parent_id);
-  var name = reply_btn.attr("rel");
-  var form = reply_btn.next('.comment_form_reply');
-  reply_btn.replaceWith('<a id="c_' + parent_id + '" class="comment_reply"
-                            href="javascript:show_comment_reply(\'' + parent_id + '\', \'' + name + '\')">Reply <span
-    class="comment_reply_icon">  ↩</span></a>').remove();
-  form.fadeOut();
-  }
-
-{% endblock %}
-
-{% block extra_jquery %}
-  $('form').live("submit", function(){
-  var action = $(this).attr("action");
-  if(action == "/comments/post/"){
-  var form = $(this);
-  var name = form.find("#id_name").val();
-  var email = form.find("#id_email").val();
-  var url = form.find("#id_url").val();
-  var comment = form.find("#id_comment").val();
-  if(name == ""){
-  alert("Please enter your name.");
-  form.find("#id_name").focus();
-  return false;
-  } else if(email == ""){
-  alert("Please enter your email address.");
-  form.find("#id_email").focus();
-  return false;
-  } else if(comment == ""){
-  alert("Please enter a comment.");
-  form.find("#id_comment").focus();
-  return false;
-  }
-
-  }
-  });
-{% endblock %}
-{% endcomment %}

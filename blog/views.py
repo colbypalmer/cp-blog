@@ -1,8 +1,9 @@
+from django.conf import settings
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
-from django.http import Http404
 from blog.models import BlogEntry, BlogCategory
 from blog.search import *
 from taggit.models import Tag, TaggedItem
@@ -11,6 +12,10 @@ from calendar import month_name
 
 
 def blog_list(request):
+    if hasattr(settings, 'DISQUS_SHORTNAME'):
+        disqus_shortname = settings.DISQUS_SHORTNAME
+    else:
+        disqus_shortname = None
 
     if request.user.is_staff:
         entries = BlogEntry.active_objects.all().order_by('-entry_date')
@@ -26,18 +31,25 @@ def blog_list(request):
         entries = paginator.page(page)
     except (InvalidPage, EmptyPage):
         entries = paginator.page(paginator.num_pages)
-    return render_to_response('blog/blog_list.html', dict(entries=entries, page_title="Blog", months=mkmonth_lst()),
-                              context_instance=RequestContext(request))
+        return render_to_response('blog/blog_list.html', dict(entries=entries, page_title="Blog", months=mkmonth_lst(),
+                                                              disqus_shortname=disqus_shortname),
+                                  context_instance=RequestContext(request))
 
 
 def blog_detail(request, slug):
+    if hasattr(settings, 'DISQUS_SHORTNAME'):
+        disqus_shortname = settings.DISQUS_SHORTNAME
+    else:
+        disqus_shortname = None
+
     if request.user.is_staff:
         entry = get_object_or_404(BlogEntry, slug=slug)
     else:
         entry = get_object_or_404(BlogEntry, slug=slug, status='2')
         entry.increment_count()
     return render_to_response('blog/blog_detail.html',
-                              {'entry': entry, 'page_title': entry.title, 'months': mkmonth_lst()},
+                              dict(entry=entry, page_title=entry.title, months=mkmonth_lst(),
+                                   disqus_shortname=disqus_shortname),
                               context_instance=RequestContext(request))
 
 

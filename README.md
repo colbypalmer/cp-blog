@@ -10,7 +10,7 @@ This basic blog template includes:
 4. Feeds
 5. Basic Templates
 
-Version: 0.01a
+Version: 0.2.0
 
 This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
 
@@ -34,16 +34,18 @@ Quick start
         'taggit_templatetags',
     )
 
-2. Include the blog URLconf in your project urls.py like this::
+2. To use with Disqus comment integration, add `'DISQUS_SHORTNAME' = 'xxxxx'` to your settings.py.
+
+3. Include the blog URLconf in your project urls.py like this::
 
     `url(r'^blog/', include('blog.urls')),`
 
-3. Run `python manage.py migrate` to create the blog models.
+4. Run `python manage.py migrate` to create the blog models.
 
-4. Start the development server and visit http://127.0.0.1:8000/admin/blog/blogentry/
+5. Start the development server and visit http://127.0.0.1:8000/admin/blog/blogentry/
    to create a blog entry (you'll need the Admin app enabled).
 
-5. Visit http://127.0.0.1:8000/blog/ to see your blog.
+6. Visit http://127.0.0.1:8000/blog/ to see your blog.
 
 
 TODO: Document OpenGraph tags and location of base.html

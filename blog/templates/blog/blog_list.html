@@ -1,7 +1,6 @@
 {% extends 'blog/blog_base.html' %}
 {% load i18n %}
 {% load taggit_extras %}
-{% load comments %}
 {% load pygmentify %}
 
 {% block meta_description %}My blog. This page lists {% if category %}entries from the {{ category }} category{% elif tag %}entries tagged {{ tag }}{% elif query_string %}entries matching search: {{ query_string }}{% else %}all recent entries{% endif %}.{% endblock %}
@@ -52,10 +51,9 @@
                         <a href="/blog/tag/{{ tag }}/">{{ tag }}</a>{% if not forloop.last %},
                         {% endif %}{% endfor %}</span>{% endif %}
         </p>
-        <a name="comments"></a>
-        {% get_comment_count for o as comment_count %}
-        <p class="article__a--comments"><a href="{% url 'blog_detail' o.slug %}#comments">Comments on this
-          post ({{ comment_count }}) &rarr;</a></p>
+        <p class="article__a--comments">
+          <a href="{% url 'blog_detail' o.slug %}#disqus_thread" data-disqus-identifier="{{ o.id }}">Comments &rarr;</a>
+        </p>
       </article>
     {% endfor %}
 
@@ -81,4 +79,18 @@
 
 {% endblock %}
 
-{% block extra_scripts %}{% endblock %}
+{% block extra_scripts %}
+
+  <script type="text/javascript">
+    var disqus_shortname = '{{ disqus_shortname }}';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+  </script>
+
+{% endblock %}
