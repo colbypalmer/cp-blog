@@ -31,9 +31,9 @@ def blog_list(request):
         entries = paginator.page(page)
     except (InvalidPage, EmptyPage):
         entries = paginator.page(paginator.num_pages)
-        return render_to_response('blog/blog_list.html', dict(entries=entries, page_title="Blog", months=mkmonth_lst(),
-                                                              disqus_shortname=disqus_shortname),
-                                  context_instance=RequestContext(request))
+    return render_to_response('blog/blog_list.html', dict(entries=entries, page_title="Blog", months=mkmonth_lst(),
+                                                          disqus_shortname=disqus_shortname),
+                              context_instance=RequestContext(request))
 
 
 def blog_detail(request, slug):

@@ -11,7 +11,7 @@ This basic blog template includes:
 5. Basic Templates
 6. Optional comments via Disqus
 
-Version: 0.2.1
+Version: 0.2.2
 
 This is set up to work with [cp-project-template](https://github.com/colbypalmer/cp-project-template "CP Project Template") by the same author.
 
