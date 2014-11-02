@@ -31,11 +31,10 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires=[
-        'Markdown==2.4',
-        'django-recaptcha==0.0.9',
-        'Pillow==2.3.0',
-        'pygments==1.6',
-        'django-grappelli==2.5.3',
-        'django-epiceditor==0.2.2',
+        'Markdown==2.5.1',
+        'Pillow==2.6.1',
+        'Pygments==1.6',
+        'django-grappelli==2.6.2',
+        'django-epiceditor==0.2.:2',
     ],
 )
