@@ -9,6 +9,7 @@ This basic blog template includes:
 3. Tags
 4. Feeds
 5. Basic Templates
+6. Optional comments via Disqus
 
 Version: 0.2.0
 
