@@ -44,8 +44,8 @@ class BlogCategory(models.Model):
 
 
 class ActiveEntryManager(models.Manager):
-    def get_query_set(self):
-        return super(ActiveEntryManager, self).get_query_set().filter(active=True)
+    def get_queryset(self):
+        return super(ActiveEntryManager, self).get_queryset().filter(active=True)
 
 
 class BlogEntry(models.Model):
