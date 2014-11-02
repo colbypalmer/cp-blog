@@ -35,6 +35,6 @@ setup(
         'Pillow==2.6.1',
         'Pygments==1.6',
         'django-grappelli==2.6.2',
-        'django-epiceditor==0.2.2',
+        # 'django-epiceditor==0.2.2',
     ],
 )
