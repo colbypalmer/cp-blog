@@ -1,7 +1,6 @@
 import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.comments.signals import comment_was_posted
 from django.core.mail import send_mail
 from django.db import models
 from django.dispatch import receiver
@@ -108,13 +107,3 @@ class BlogEntry(models.Model):
             self.entry_date = datetime.datetime.now()
         self.body = markdown(self.body_markdown, ['codehilite'])
         super(BlogEntry, self).save(*args, **kwargs)
-
-
-@receiver(comment_was_posted)
-def comment_notification(sender, comment, request, **kwargs):
-    send_mail('Comment Submission',
-              'From: %s\nEmail: %s\nURL: %s\n\nComment: \n%s\n\nUser: %s\nReply To: %s\nPublic: %s\n\nIP Address: %s\n\n' % (
-                  comment.user_name, comment.user_email, comment.user_url, comment.comment, comment.user_id,
-                  comment.parent_id, comment.is_public, comment.ip_address), 'admin@colbypalmer.com', settings.MANAGERS[0],
-              fail_silently=False)
-    pass
