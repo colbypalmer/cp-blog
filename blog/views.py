@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.views.generic import TemplateView, View
 
 from blog.models import BlogEntry, BlogCategory
 from blog.search import *
@@ -11,108 +12,153 @@ import time
 from calendar import month_name
 
 
-def blog_list(request):
-    if hasattr(settings, 'DISQUS_SHORTNAME'):
-        disqus_shortname = settings.DISQUS_SHORTNAME
-    else:
-        disqus_shortname = None
+class BlogListView(TemplateView):
 
-    if request.user.is_staff:
-        entries = BlogEntry.active_objects.all().order_by('-entry_date')
-    else:
-        entries = BlogEntry.active_objects.filter(status="2").order_by('-entry_date')
+    template_name = 'blog/blog_list.html'
 
-    paginator = Paginator(entries, 5)
-    try:
-        page = int(request.GET.get("page", '1'))
-    except ValueError:
-        page = 1
-    try:
-        entries = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        entries = paginator.page(paginator.num_pages)
-    return render_to_response('blog/blog_list.html', dict(entries=entries, page_title="Blog", months=mkmonth_lst(),
-                                                          disqus_shortname=disqus_shortname),
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
 
-
-def blog_detail(request, slug):
-    if hasattr(settings, 'DISQUS_SHORTNAME'):
-        disqus_shortname = settings.DISQUS_SHORTNAME
-    else:
-        disqus_shortname = None
-
-    if request.user.is_staff:
-        entry = get_object_or_404(BlogEntry, slug=slug)
-    else:
-        entry = get_object_or_404(BlogEntry, slug=slug, status='2')
-        entry.increment_count()
-    return render_to_response('blog/blog_detail.html',
-                              dict(entry=entry, page_title=entry.title, months=mkmonth_lst(),
-                                   disqus_shortname=disqus_shortname),
-                              context_instance=RequestContext(request))
-
-
-def blog_archive_date(request):
-    return render_to_response('blog/blog_archive_date.html',
-                              {'page_title': 'Blog Entries by Date', 'months': mkmonth_lst()},
-                              context_instance=RequestContext(request))
-
-
-def blog_archive_title(request):
-    if request.user.is_staff:
-        entries = BlogEntry.active_objects.all().order_by('-entry_date')
-    else:
-        entries = BlogEntry.active_objects.filter(status='2').order_by('-entry_date')
-
-    return render_to_response('blog/blog_archive_title.html',
-                              {'entries': entries, 'page_title': 'Blog Entries by Title'},
-                              context_instance=RequestContext(request))
-
-
-def blog_entries_by_category(request, slug):
-    slug_str = str(slug)
-    category = BlogCategory.objects.filter(slug=slug_str)
-
-    if request.user.is_staff:
-        entries = BlogEntry.active_objects.filter(category=category).order_by('-entry_date')
-    else:
-        entries = BlogEntry.active_objects.filter(category=category, status='2').order_by('-entry_date')
-
-    paginator = Paginator(entries, 5)
-    try:
-        page = int(request.GET.get("page", '1'))
-    except ValueError:
-        page = 1
-    try:
-        entries = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        entries = paginator.page(paginator.num_pages)
-
-    return render_to_response('blog/blog_list.html', {'entries': entries, 'category': category[0].title,
-                                                      'page_title': 'Entries by category "%s"' % category[0].title,
-                                                      'months': mkmonth_lst()},
-                              context_instance=RequestContext(request))
-
-
-def blog_tags(request):
-    return render_to_response("blog/blog_tags.html", {'page_title': 'Tags for this blog', 'months': mkmonth_lst()},
-                              context_instance=RequestContext(request))
-
-
-def blog_search(request):
-    query_string = ''
-    matches = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-        entry_query = get_query(query_string, ['title', 'description', 'body'])
-
-        if request.user.is_staff:
-            entries = BlogEntry.active_objects.filter(entry_query) or None
+        if hasattr(settings, 'DISQUS_SHORTNAME'):
+            disqus_shortname = settings.DISQUS_SHORTNAME
         else:
-            entries = BlogEntry.active_objects.filter(status='2').filter(entry_query) or None
+            disqus_shortname = None
+
+        if self.request.user.is_staff:
+            entries = BlogEntry.active_objects.all().order_by('-entry_date')
+        else:
+            entries = BlogEntry.active_objects.filter(status="2").order_by('-entry_date')
+        paginator = Paginator(entries, 5)
+        try:
+            page = int(self.request.GET.get("page", '1'))
+        except ValueError:
+            page = 1
+        try:
+            entries = paginator.page(page)
+        except (InvalidPage, EmptyPage):
+            entries = paginator.page(paginator.num_pages)
+
+        return dict(entries=entries, page_title="Blog", months=mkmonth_lst(), disqus_shortname=disqus_shortname)
+
+
+class BlogDetailView(TemplateView):
+
+    template_name = 'blog/blog_detail.html'
+
+    def get_context_data(self, **kwargs):
+        if hasattr(settings, 'DISQUS_SHORTNAME'):
+            disqus_shortname = settings.DISQUS_SHORTNAME
+        else:
+            disqus_shortname = None
+
+        if self.request.user.is_staff:
+            entry = get_object_or_404(BlogEntry, slug=self.kwargs['slug'])
+        else:
+            entry = get_object_or_404(BlogEntry, slug=self.kwargs['slug'], status='2')
+            entry.increment_count()
+
+        return dict(entry=entry, page_title=entry.title, months=mkmonth_lst(), disqus_shortname=disqus_shortname)
+
+
+class BlogArchiveDateView(TemplateView):
+
+    template_name = 'blog/blog_archive_date.html'
+
+    def get_context_data(self, **kwargs):
+        return {'page_title': 'Blog Entries by Date', 'months': mkmonth_lst()}
+
+
+class BlogArchiveTitleView(TemplateView):
+
+    template_name = 'blog/blog_archive_title.html'
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.is_staff:
+            entries = BlogEntry.active_objects.all().order_by('-entry_date')
+        else:
+            entries = BlogEntry.active_objects.filter(status='2').order_by('-entry_date')
+
+        return {'entries': entries, 'page_title': 'Blog Entries by Title'}
+
+
+class BlogEntriesByCategoryView(TemplateView):
+
+    template_name = 'blog/blog_list.html'
+
+    def get_context_data(self, **kwargs):
+        slug_str = str(self.kwargs['slug'])
+        category = BlogCategory.objects.filter(slug=slug_str)
+
+        if self.request.user.is_staff:
+            entries = BlogEntry.active_objects.filter(category=category).order_by('-entry_date')
+        else:
+            entries = BlogEntry.active_objects.filter(category=category, status='2').order_by('-entry_date')
+
+        paginator = Paginator(entries, 5)
+        try:
+            page = int(self.request.GET.get("page", '1'))
+        except ValueError:
+            page = 1
+        try:
+            entries = paginator.page(page)
+        except (InvalidPage, EmptyPage):
+            entries = paginator.page(paginator.num_pages)
+
+        return {'entries': entries, 'category': category[0].title, 'page_title': 'Entries by category "%s"' % category[0].title, 'months': mkmonth_lst()}
+
+
+class BlogTagsView(TemplateView):
+
+    template_name = 'blog/blog_tags.html'
+
+    def get_context_data(self, **kwargs):
+        return {'page_title': 'Tags for this blog', 'months': mkmonth_lst()}
+
+
+class BlogSearchView(TemplateView):
+
+    template_name = 'blog/blog_list.html'
+
+    def get_context_data(self, **kwargs):
+        if ('q' in self.request.GET) and self.request.GET['q'].strip():
+            query_string = self.request.GET['q']
+            entry_query = get_query(query_string, ['title', 'description', 'body'])
+            if self.request.user.is_staff:
+                entries = BlogEntry.active_objects.filter(entry_query) or None
+            else:
+                entries = BlogEntry.active_objects.filter(status='2').filter(entry_query) or None
+            try:
+                paginator = Paginator(entries, 5)
+                try:
+                    page = int(self.request.GET.get("page", '1'))
+                except ValueError:
+                    page = 1
+                try:
+                    entries = paginator.page(page)
+                except (InvalidPage, EmptyPage):
+                    entries = paginator.page(paginator.num_pages)
+            except TypeError:
+                pass
+            return dict(entries=entries, query_string=query_string, page_title='Search Blog for "%s"' % query_string)
+        else:
+            raise Http404
+
+
+# def blog_entries_by_tag(request, tag, object_id=None, page=1):
+
+class BlogEntriesByTagView(TemplateView):
+
+    template_name = 'blog/blog_list.html'
+
+    def get_context_data(self, **kwargs):
 
         try:
+            tag = Tag.objects.get(name=self.kwargs['tag'])
+
+            if self.request.user.is_staff:
+                entries = BlogEntry.objects.filter(tags__name__in=[tag]).order_by('-entry_date')
+            else:
+                entries = BlogEntry.objects.filter(status='2').filter(tags__name__in=[tag]).order_by('-entry_date')
+
             paginator = Paginator(entries, 5)
             try:
                 page = int(request.GET.get("page", '1'))
@@ -122,45 +168,18 @@ def blog_search(request):
                 entries = paginator.page(page)
             except (InvalidPage, EmptyPage):
                 entries = paginator.page(paginator.num_pages)
-        except TypeError:
-            pass
-        return render_to_response('blog/blog_list.html', dict(entries=entries, query_string=query_string,
-                                                              page_title='Search Blog for "%s"' % query_string),
-                                  context_instance=RequestContext(request))
-    else:
-        raise Http404
-
-
-def blog_entries_by_tag(request, tag, object_id=None, page=1):
-    page_title = 'Entries with tag "%s"' % tag
-    try:
-        query_tag = Tag.objects.get(name=tag)
-
-        if request.user.is_staff:
-            entries = BlogEntry.objects.filter(tags__name__in=[tag]).order_by('-entry_date')
-        else:
-            entries = BlogEntry.objects.filter(status='2').filter(tags__name__in=[tag]).order_by('-entry_date')
-
-        paginator = Paginator(entries, 5)
-        try:
-            page = int(request.GET.get("page", '1'))
-        except ValueError:
-            page = 1
-        try:
-            entries = paginator.page(page)
-        except (InvalidPage, EmptyPage):
-            entries = paginator.page(paginator.num_pages)
-    except Tag.DoesNotExist:
-        entries = None
-    return render_to_response("blog/blog_list.html",
-                              dict(tag=tag, entries=entries, page_title=page_title, months=mkmonth_lst()),
-                              context_instance=RequestContext(request))
+        except Tag.DoesNotExist:
+            entries = None
+            tag = ''
+        page_title = 'Entries with tag "%s"' % tag
+        return dict(tag=tag, entries=entries, page_title=page_title, months=mkmonth_lst())
 
 
 def mkmonth_lst():
     """Make a list of months to show archive links."""
 
-    if not BlogEntry.active_objects.count(): return []
+    if not BlogEntry.active_objects.count():
+        return []
 
     # set up vars
     year, month = time.localtime()[:2]
@@ -181,24 +200,28 @@ def mkmonth_lst():
     return months
 
 
-def month(request, year, month):
+class BlogMonthView(TemplateView):
     """Monthly archive."""
 
-    if request.user.is_staff:
-        entries = BlogEntry.active_objects.filter(entry_date__year=year, entry_date__month=month)
-    else:
-        entries = BlogEntry.active_objects.filter(status='2', entry_date__year=year, entry_date__month=month)
+    template_name = 'blog/blog_list.html'
 
-    paginator = Paginator(entries, 5)
-    page_title = 'Entries from %s, %s' % (month, year)
-    try:
-        page = int(request.GET.get("page", '1'))
-    except ValueError:
-        page = 1
-    try:
-        entries = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        entries = paginator.page(paginator.num_pages)
-    return render_to_response("blog/blog_list.html",
-                              dict(entries=entries, page_title=page_title, months=mkmonth_lst(), archive=True),
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+
+        year = self.kwargs['year']
+        month = self.kwargs['month']
+
+        if self.request.user.is_staff:
+            entries = BlogEntry.active_objects.filter(entry_date__year=year, entry_date__month=month)
+        else:
+            entries = BlogEntry.active_objects.filter(status='2', entry_date__year=year, entry_date__month=month)
+        paginator = Paginator(entries, 5)
+        page_title = 'Entries from %s, %s' % (month, year)
+        try:
+            page = int(self.request.GET.get("page", '1'))
+        except ValueError:
+            page = 1
+        try:
+            entries = paginator.page(page)
+        except (InvalidPage, EmptyPage):
+            entries = paginator.page(paginator.num_pages)
+        return dict(entries=entries, page_title=page_title, months=mkmonth_lst(), archive=True)
