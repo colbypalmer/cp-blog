@@ -8,7 +8,7 @@ class LatestEntriesRssFeed(Feed):
     description = "The last ten posts from My Special Blog."
 
     def items(self):
-        items = BlogEntry.active_objects.all().order_by('-id')[:10]
+        items = BlogEntry.published_objects.all().order_by('-id')[:10]
         return items
 
     def item_title(self, item):
