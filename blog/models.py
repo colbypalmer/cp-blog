@@ -46,6 +46,9 @@ class ActiveEntryManager(models.Manager):
     def get_queryset(self):
         return super(ActiveEntryManager, self).get_queryset().filter(active=True)
 
+class PublishedEntryManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedEntryManager, self).get_queryset().filter(active=True, status='2')
 
 class BlogEntry(models.Model):
     """
